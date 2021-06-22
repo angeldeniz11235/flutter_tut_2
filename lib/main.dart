@@ -112,17 +112,61 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> list = widget.data;
+    int index = widget.index;
+    String name = list.elementAt(index)['name'];
+    String city = list.elementAt(index)['city'];
+    String state = list.elementAt(index)['state'];
+    String website = list.elementAt(index)['website_url'] != null
+        ? list.elementAt(index)['website_url']
+        : "Website not available";
     print(list.elementAt(widget.index));
     return Scaffold(
-      appBar: AppBar(
-        title: Text(list.elementAt(widget.index)['name']),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: Text("Back"),
-          onPressed: () => {Navigator.pop(context)},
+        appBar: AppBar(
+          title: Text(name),
         ),
-      ),
-    );
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: NetworkImage(
+                    'http://www.giltbarchicago.com/wp-content/uploads/GiltBar-39.jpg'),
+                fit: BoxFit.cover),
+          ),
+          child: Center(
+              child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                    top: ((MediaQuery.of(context).size.height) / 4) + 60),
+              ),
+              Text(
+                city,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 38.0,
+                  height: 1.2,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                state,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28.0,
+                  height: 1.2,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                website,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                  height: 1.2,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
+          )),
+        ));
   }
 }
