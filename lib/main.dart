@@ -1,9 +1,6 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_dev_tutorial2/services/brewery_service.dart';
 
 void main() {
   runApp(new MaterialApp(
@@ -17,11 +14,11 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  Future<List<dynamic>> getData() async {
-    var response = await http.get(
-        Uri.parse("https://api.openbrewerydb.org/breweries"),
-        headers: {"Accept": "application/json"});
-    return json.decode(response.body);
+  late BreweryService breweryService;
+  @override
+  void initState() {
+    breweryService = BreweryService();
+    super.initState();
   }
 
   @override
@@ -32,30 +29,30 @@ class HomePageState extends State<HomePage> {
         title: Text('Breweries'),
       ),
       body: Container(
-        child: FutureBuilder<List<dynamic>>(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
+        child: FutureBuilder<List<Bar>>(
+          future: breweryService.getData(),
+          builder: (BuildContext context, AsyncSnapshot<List<Bar>> snapshot) {
             if (snapshot.hasData) {
               return Column(children: [
                 Expanded(
                   flex: 8,
                   child: ListView.builder(
                       padding: EdgeInsets.all(8),
-                      itemCount: snapshot.data.length,
+                      itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Card(
                           child: Column(
                             children: <Widget>[
                               ListTile(
                                 leading: Icon(Icons.local_drink),
-                                title: Text(snapshot.data[index]['name']),
-                                subtitle: Text(snapshot.data[index]['city'] +
+                                title: Text(snapshot.data![index].name),
+                                subtitle: Text(snapshot.data![index].city +
                                     ', ' +
-                                    snapshot.data[index]['state']),
+                                    snapshot.data![index].state),
                                 onTap: () => {
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
-                                    List<dynamic> list = snapshot.data;
+                                    List<Bar> list = snapshot.data!;
                                     return DetailScreen(list, index);
                                   }))
                                 },
@@ -93,15 +90,24 @@ class Bar {
   final String name;
   final String city;
   final String state;
-  Bar({required this.city, required this.name, required this.state});
+  final String? website;
+  Bar(
+      {required this.city,
+      required this.name,
+      required this.state,
+      this.website});
 
   factory Bar.fromJson(Map<String, dynamic> json) {
-    return Bar(name: json['name'], city: json['city'], state: json['state']);
+    return Bar(
+        name: json['name'],
+        city: json['city'],
+        state: json['state'],
+        website: json['website_url']);
   }
 }
 
 class DetailScreen extends StatefulWidget {
-  final List<dynamic> data;
+  final List<Bar> data;
   final int index;
   const DetailScreen(this.data, this.index);
   @override
@@ -111,14 +117,14 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
-    List<dynamic> list = widget.data;
+    List<Bar> list = widget.data;
     int index = widget.index;
-    String name = list.elementAt(index)['name'];
-    String city = list.elementAt(index)['city'];
-    String state = list.elementAt(index)['state'];
-    String website = list.elementAt(index)['website_url'] != null
-        ? list.elementAt(index)['website_url']
-        : "Website not available";
+    Bar bar = list[index];
+    String name = bar.name;
+    String city = bar.city;
+    String state = bar.state;
+    String? website =
+        bar.website != null ? bar.website : "Website not available";
     print(list.elementAt(widget.index));
     return Scaffold(
         appBar: AppBar(
@@ -157,7 +163,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
               ),
               Text(
-                website,
+                website!,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
