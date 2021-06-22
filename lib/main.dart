@@ -26,7 +26,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    getData();
+    //getData();
     return new Scaffold(
       appBar: AppBar(
         title: Text('Breweries'),
@@ -52,6 +52,13 @@ class HomePageState extends State<HomePage> {
                                 subtitle: Text(snapshot.data[index]['city'] +
                                     ', ' +
                                     snapshot.data[index]['state']),
+                                onTap: () => {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    List<dynamic> list = snapshot.data;
+                                    return DetailScreen(list, index);
+                                  }))
+                                },
                               )
                             ],
                           ),
@@ -76,6 +83,44 @@ class HomePageState extends State<HomePage> {
               );
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class Bar {
+  final String name;
+  final String city;
+  final String state;
+  Bar({required this.city, required this.name, required this.state});
+
+  factory Bar.fromJson(Map<String, dynamic> json) {
+    return Bar(name: json['name'], city: json['city'], state: json['state']);
+  }
+}
+
+class DetailScreen extends StatefulWidget {
+  final List<dynamic> data;
+  final int index;
+  const DetailScreen(this.data, this.index);
+  @override
+  _DetailScreenState createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  @override
+  Widget build(BuildContext context) {
+    List<dynamic> list = widget.data;
+    print(list.elementAt(widget.index));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(list.elementAt(widget.index)['name']),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          child: Text("Back"),
+          onPressed: () => {Navigator.pop(context)},
         ),
       ),
     );
