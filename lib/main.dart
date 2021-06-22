@@ -35,20 +35,22 @@ class HomePageState extends State<HomePage> {
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
-              return ListView.builder(
-                  padding: EdgeInsets.all(8),
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(snapshot.data[index]['name']),
-                          )
-                        ],
-                      ),
-                    );
-                  });
+              return Column(children: [
+                ListView.builder(
+                    padding: EdgeInsets.all(8),
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(snapshot.data[index]['name']),
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+              ]);
             } else {
               return Center(
                 child: CircularProgressIndicator(),
