@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -36,20 +37,38 @@ class HomePageState extends State<HomePage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               return Column(children: [
-                ListView.builder(
-                    padding: EdgeInsets.all(8),
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
-                              title: Text(snapshot.data[index]['name']),
-                            )
-                          ],
+                Expanded(
+                  flex: 8,
+                  child: ListView.builder(
+                      padding: EdgeInsets.all(8),
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                leading: Icon(Icons.local_drink),
+                                title: Text(snapshot.data[index]['name']),
+                                subtitle: Text(snapshot.data[index]['city'] +
+                                    ', ' +
+                                    snapshot.data[index]['state']),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+                Expanded(
+                    flex: 2,
+                    child: Row(children: [
+                      Expanded(
+                        flex: 1,
+                        child: Image.asset(
+                          'assets/img/beer1-w600.jpg',
+                          fit: BoxFit.none,
                         ),
-                      );
-                    }),
+                      )
+                    ]))
               ]);
             } else {
               return Center(
