@@ -129,7 +129,7 @@ class _DetailScreenState extends State<DetailScreen> {
             image: DecorationImage(
                 image: NetworkImage(
                     'http://www.giltbarchicago.com/wp-content/uploads/GiltBar-39.jpg'),
-                fit: BoxFit.cover),
+                fit: BoxFit.fitHeight),
           ),
           child: Center(
               child: Column(
