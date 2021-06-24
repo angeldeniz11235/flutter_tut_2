@@ -133,8 +133,7 @@ class _DetailScreenState extends State<DetailScreen> {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: NetworkImage(
-                    'http://www.giltbarchicago.com/wp-content/uploads/GiltBar-39.jpg'),
+                image: new AssetImage("assets/img/bar_bg.jpg"),
                 fit: BoxFit.fitHeight),
           ),
           child: Center(
