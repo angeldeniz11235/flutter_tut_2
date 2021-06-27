@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dev_tutorial2/services/brewery_service.dart';
+import 'package:flutter_dev_tutorial2/bloc/search_results_bloc.dart';
 
 void main() {
   runApp(new MaterialApp(
