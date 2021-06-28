@@ -5,6 +5,8 @@ import 'package:flutter_dev_tutorial2/main.dart';
 class SearchResBlock extends Bloc<String, List<Bar>> {
   SearchResBlock() : super(List<Bar>.empty());
 
+  List<Bar> get initialState => List<Bar>.empty();
+
   @override
   Stream<List<Bar>> mapEventToState(String query) async* {
     yield state

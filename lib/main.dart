@@ -28,7 +28,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _serchResBloc = BlocProvider.of<SearchResBlock>(context);
+    final _searchResBloc = BlocProvider.of<SearchResBlock>(context);
 
     return new Scaffold(
       appBar: AppBar(
@@ -44,7 +44,7 @@ class HomePageState extends State<HomePage> {
                   flex: 1,
                   child: TextField(
                     onChanged: (String query) {
-                      _serchResBloc.add(query);
+                      _searchResBloc.add(query);
                     },
                   ),
                 ),
@@ -147,7 +147,7 @@ class _DetailScreenState extends State<DetailScreen> {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: new AssetImage("assets/img/bar_bg.jpg"),
+                image: new AssetImage("assets/img/bar_bg.png"),
                 fit: BoxFit.fitHeight),
           ),
           child: Center(
