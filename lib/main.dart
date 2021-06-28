@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dev_tutorial2/services/brewery_service.dart';
 import 'package:flutter_dev_tutorial2/bloc/search_results_bloc.dart';
 
 void main() {
   runApp(new MaterialApp(
-    home: new HomePage(),
+    home: BlocProvider(
+      create: (BuildContext context) => SearchResBlock(),
+      child: HomePage(),
+    ),
   ));
 }
 
@@ -24,7 +28,8 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //getData();
+    final _serchResBloc = BlocProvider.of<SearchResBlock>(context);
+
     return new Scaffold(
       appBar: AppBar(
         title: Text('Breweries'),
@@ -35,6 +40,14 @@ class HomePageState extends State<HomePage> {
           builder: (BuildContext context, AsyncSnapshot<List<Bar>> snapshot) {
             if (snapshot.hasData) {
               return Column(children: [
+                Expanded(
+                  flex: 1,
+                  child: TextField(
+                    onChanged: (String query) {
+                      _serchResBloc.add(query);
+                    },
+                  ),
+                ),
                 Expanded(
                   flex: 8,
                   child: ListView.builder(
@@ -64,7 +77,7 @@ class HomePageState extends State<HomePage> {
                       }),
                 ),
                 Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Row(children: [
                       Expanded(
                         flex: 1,
