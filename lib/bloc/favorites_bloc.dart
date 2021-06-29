@@ -1,24 +1,32 @@
 import 'dart:async';
+import 'package:flutter_dev_tutorial2/classes/bar_class.dart';
 
 class FavoritesBloc {
-  //init and get int StreamContoller
-  final _indexStreamController = StreamController<int>();
-  StreamSink<int> get indexSink => _indexStreamController.sink;
+  //init and get String StreamContoller
+  final _indexStreamController = StreamController<String>();
+  StreamSink<String> get barNameSink => _indexStreamController.sink;
 
-  //expose int stream
-  Stream<int> get indexStream => _indexStreamController.stream;
+  //expose String stream
+  Stream<String> get barNameStream => _indexStreamController.stream;
 
   //init and get List<bool> StreamContoller
-  final _favListStreamController = StreamController<List<bool>>();
-  StreamSink<List<bool>> get favListSink => _favListStreamController.sink;
+  final _favListStreamController =
+      StreamController<Map<String, bool>>.broadcast();
+  StreamSink<Map<String, bool>> get favListSink =>
+      _favListStreamController.sink;
 
   //expose List<bool> stream
-  Stream<List<bool>> get favListStream => _favListStreamController.stream;
+  Stream<Map<String, bool>> get favListStream =>
+      _favListStreamController.stream;
 
-  FavoritesBloc(List<bool> list) {
-    List<bool> _isFavorite = List.filled(list.length, false);
-    _indexStreamController.stream.listen((index) {
-      _isFavorite[index] = !_isFavorite[index];
+  late Map<String, bool> _isFavorite;
+  getFavList() => _isFavorite;
+
+  FavoritesBloc(List<Bar> list) {
+    _isFavorite =
+        Map.fromIterable(list, key: (e) => e.name, value: (e) => false);
+    _indexStreamController.stream.listen((name) {
+      _isFavorite.update(name, (value) => !value);
       favListSink.add(_isFavorite);
     });
   }

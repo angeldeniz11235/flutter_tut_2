@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_dev_tutorial2/classes/bar_class.dart';
 import 'package:flutter_dev_tutorial2/services/brewery_service.dart';
 import 'package:flutter_dev_tutorial2/bloc/search_results_bloc.dart';
+import 'package:flutter_dev_tutorial2/bloc/favorites_bloc.dart';
 
 void main() {
   runApp(new MaterialApp(
@@ -38,6 +39,7 @@ class HomePageState extends State<HomePage> {
 
   Widget _homeScreen(List<Bar> fullList) {
     late SearchResBloc _filteredListBloc = SearchResBloc(fullList);
+    FavoritesBloc _favListBloc = FavoritesBloc(fullList);
 
     return new Scaffold(
       appBar: AppBar(
@@ -68,17 +70,33 @@ class HomePageState extends State<HomePage> {
                           child: Column(
                             children: <Widget>[
                               ListTile(
-                                leading: Icon(Icons.local_drink),
+                                leading: StreamBuilder<Map<String, bool>>(
+                                    initialData: _favListBloc.getFavList(),
+                                    stream: _favListBloc.favListStream,
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<Map<String, bool>>
+                                            favListSnap) {
+                                      if (favListSnap.hasData) {
+                                        return favListSnap.data![
+                                                snapshot.data![index].name]!
+                                            ? Icon(Icons.favorite)
+                                            : Icon(Icons.local_drink);
+                                      } else {
+                                        return Icon(Icons.local_drink);
+                                      }
+                                    }),
                                 title: Text(snapshot.data![index].name),
                                 subtitle: Text(snapshot.data![index].city +
                                     ', ' +
                                     snapshot.data![index].state),
-                                onTap: () => {
+                                onTap: () {
+                                  _favListBloc.barNameSink
+                                      .add(snapshot.data![index].name);
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
                                     List<Bar> list = snapshot.data!;
                                     return DetailScreen(list, index);
-                                  }))
+                                  }));
                                 },
                               )
                             ],
