@@ -6,10 +6,7 @@ import 'package:flutter_dev_tutorial2/bloc/search_results_bloc.dart';
 
 void main() {
   runApp(new MaterialApp(
-    home: BlocProvider(
-      create: (BuildContext context) => SearchResBlock(),
-      child: HomePage(),
-    ),
+    home: HomePage(),
   ));
 }
 
@@ -20,23 +17,27 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   late BreweryService breweryService;
+  late List<Bar> fullList;
+  late SearchResBloc _filteredListBloc;
   @override
   void initState() {
     breweryService = BreweryService();
+    breweryService.getData().then((List<Bar> res) {
+      fullList = res;
+    });
+    _filteredListBloc = SearchResBloc(fullList);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final _searchResBloc = BlocProvider.of<SearchResBlock>(context);
-
     return new Scaffold(
       appBar: AppBar(
         title: Text('Breweries'),
       ),
       body: Container(
-        child: FutureBuilder<List<Bar>>(
-          future: breweryService.getData(),
+        child: StreamBuilder<List<Bar>>(
+          stream: _filteredListBloc.listStream,
           builder: (BuildContext context, AsyncSnapshot<List<Bar>> snapshot) {
             if (snapshot.hasData) {
               return Column(children: [
@@ -44,7 +45,7 @@ class HomePageState extends State<HomePage> {
                   flex: 1,
                   child: TextField(
                     onChanged: (String query) {
-                      _searchResBloc.add(query);
+                      _filteredListBloc.stringSink.add(query);
                     },
                   ),
                 ),
