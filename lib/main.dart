@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dev_tutorial2/classes/bar_class.dart';
 import 'package:flutter_dev_tutorial2/services/brewery_service.dart';
 import 'package:flutter_dev_tutorial2/bloc/search_results_bloc.dart';
 
@@ -112,26 +112,6 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return _body;
-  }
-}
-
-class Bar {
-  final String name;
-  final String city;
-  final String state;
-  final String? website;
-  Bar(
-      {required this.city,
-      required this.name,
-      required this.state,
-      this.website});
-
-  factory Bar.fromJson(Map<String, dynamic> json) {
-    return Bar(
-        name: json['name'],
-        city: json['city'],
-        state: json['state'],
-        website: json['website_url']);
   }
 }
 

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_dev_tutorial2/main.dart';
+import 'package:flutter_dev_tutorial2/classes/bar_class.dart';
 import 'package:http/http.dart' as http;
 
 class BreweryService {
