@@ -17,26 +17,35 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   late BreweryService breweryService;
-  late List<Bar> fullList;
-  late SearchResBloc _filteredListBloc;
   @override
   void initState() {
     breweryService = BreweryService();
-    breweryService.getData().then((List<Bar> res) {
-      fullList = res;
-    });
-    _filteredListBloc = SearchResBloc(fullList);
+    _getList();
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _body = CircularProgressIndicator();
+
+  _getList() {
+    breweryService.getData().then((List<Bar> res) {
+      if (res.isNotEmpty) {
+        setState(() => _body = _homeScreen(res));
+      } else {
+        setState(() => _body = CircularProgressIndicator());
+      }
+    });
+  }
+
+  Widget _homeScreen(List<Bar> fullList) {
+    late SearchResBloc _filteredListBloc = SearchResBloc(fullList);
+
     return new Scaffold(
       appBar: AppBar(
         title: Text('Breweries'),
       ),
       body: Container(
         child: StreamBuilder<List<Bar>>(
+          initialData: fullList,
           stream: _filteredListBloc.listStream,
           builder: (BuildContext context, AsyncSnapshot<List<Bar>> snapshot) {
             if (snapshot.hasData) {
@@ -98,6 +107,11 @@ class HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _body;
   }
 }
 
